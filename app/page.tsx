@@ -43,6 +43,11 @@ type ContractSignal = {
   time: string;
 };
 
+type WatchAccount = {
+  handle: string;
+  tone: string;
+};
+
 const initialSignals: ContractSignal[] = [
   {
     address: contractAddress,
@@ -73,7 +78,7 @@ const initialSignals: ContractSignal[] = [
   },
 ];
 
-const starterAccounts = [
+const starterAccounts: WatchAccount[] = [
   { handle: '@realDonaldTrump', tone: 'from-amber-300 to-orange-500' },
   { handle: '@solana', tone: 'from-violet-400 to-fuchsia-500' },
   { handle: '@pumpdotfun', tone: 'from-emerald-300 to-cyan-500' },
@@ -126,6 +131,7 @@ export default function Home() {
   const [contractInput, setContractInput] = useState('');
   const [contractError, setContractError] = useState('');
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
+  const [historyReady, setHistoryReady] = useState(false);
   const [importMessage, setImportMessage] = useState('');
   const [importOpen, setImportOpen] = useState(false);
   const [importText, setImportText] = useState('');
@@ -143,6 +149,56 @@ export default function Home() {
     () => `${accounts.length.toString().padStart(2, '0')} watched`,
     [accounts.length],
   );
+
+  useEffect(() => {
+    try {
+      const storedSignals = JSON.parse(window.localStorage.getItem('pulse-cube-contract-history') ?? 'null');
+      if (Array.isArray(storedSignals)) {
+        const restoredSignals = storedSignals
+          .filter((signal): signal is ContractSignal => (
+            typeof signal?.address === 'string'
+            && isSolanaAddress(signal.address)
+            && typeof signal.id === 'string'
+            && typeof signal.name === 'string'
+            && typeof signal.postText === 'string'
+            && typeof signal.postedAt === 'string'
+            && typeof signal.source === 'string'
+            && typeof signal.time === 'string'
+          ))
+          .slice(0, 100);
+        if (restoredSignals.length) {
+          signalsRef.current = restoredSignals;
+          setSignals(restoredSignals);
+        }
+      }
+
+      const storedAccounts = JSON.parse(window.localStorage.getItem('pulse-cube-watchlist') ?? 'null');
+      if (Array.isArray(storedAccounts)) {
+        const restoredAccounts = storedAccounts
+          .filter((account): account is WatchAccount => typeof account?.handle === 'string' && /^@[A-Za-z0-9_]{1,15}$/.test(account.handle))
+          .slice(0, 100)
+          .map((account) => ({ handle: account.handle, tone: 'from-sky-300 to-blue-500' }));
+        if (restoredAccounts.length) {
+          accountsRef.current = restoredAccounts;
+          setAccounts(restoredAccounts);
+        }
+      }
+    } catch {
+      // Keep the preview defaults if saved browser data is invalid or unavailable.
+    } finally {
+      setHistoryReady(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!historyReady) return;
+    window.localStorage.setItem('pulse-cube-contract-history', JSON.stringify(signals.slice(0, 100)));
+  }, [historyReady, signals]);
+
+  useEffect(() => {
+    if (!historyReady) return;
+    window.localStorage.setItem('pulse-cube-watchlist', JSON.stringify(accounts.slice(0, 100)));
+  }, [accounts, historyReady]);
 
   useEffect(() => {
     const context = (document as Document & { modelContext?: ModelContext }).modelContext;
@@ -540,7 +596,7 @@ export default function Home() {
             <div className="mb-2 flex items-end justify-between">
               <div>
                 <h2 className="text-sm font-bold tracking-[-0.02em]" id="history-heading">Contract history</h2>
-                <p className="mt-0.5 text-[10px] text-slate-500">All saved alerts · newest first</p>
+                <p className="mt-0.5 text-[10px] text-slate-500">Saved on this device · newest first</p>
               </div>
               <span className="rounded-md border border-white/[0.08] bg-white/[0.03] px-1.5 py-0.5 text-[10px] text-slate-500">{signals.length}</span>
             </div>
