@@ -30,6 +30,33 @@ const starterAccounts = [
   { handle: '@pumpdotfun', tone: 'from-emerald-300 to-cyan-500' },
 ];
 
+const snowflakes = Array.from({ length: 32 }, (_, index) => ({
+  delay: `${-((index * 0.79) % 8)}s`,
+  duration: `${6.5 + ((index * 1.19) % 5)}s`,
+  left: `${(index * 17 + 4) % 100}%`,
+  size: `${1 + (index % 3)}px`,
+}));
+
+function SnowField() {
+  return (
+    <div aria-hidden="true" className="snow-field">
+      {snowflakes.map((flake, index) => (
+        <span
+          className="snowflake"
+          key={index}
+          style={{
+            animationDelay: flake.delay,
+            animationDuration: flake.duration,
+            height: flake.size,
+            left: flake.left,
+            width: flake.size,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 type ModelContext = {
   registerTool: (
     tool: {
@@ -163,35 +190,36 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-dvh overflow-hidden bg-[#07101b] px-4 py-6 text-slate-100 sm:grid sm:place-items-center sm:p-8">
+    <main className="min-h-dvh overflow-hidden bg-[#050505] px-4 py-6 text-slate-100 sm:grid sm:place-items-center sm:p-8">
       <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute left-[-12rem] top-[-12rem] size-[30rem] rounded-full bg-cyan-500/10 blur-[100px]" />
-        <div className="absolute bottom-[-16rem] right-[-11rem] size-[32rem] rounded-full bg-violet-500/15 blur-[110px]" />
+        <div className="absolute left-[-12rem] top-[-12rem] size-[30rem] rounded-full bg-white/[0.035] blur-[100px]" />
+        <div className="absolute bottom-[-16rem] right-[-11rem] size-[32rem] rounded-full bg-emerald-300/[0.055] blur-[110px]" />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(148,163,184,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.035)_1px,transparent_1px)] bg-[size:28px_28px]" />
       </div>
 
-      <section className="relative mx-auto w-full max-w-[420px] rounded-[30px] border border-white/10 bg-[#0d1828]/95 shadow-[0_34px_90px_rgba(0,0,0,0.52)] backdrop-blur-xl">
+      <section className="pulse-cube relative mx-auto w-full max-w-[420px] overflow-hidden rounded-[18px] border border-white/15 bg-[#0a0a0a]/95 shadow-[0_0_0_1px_rgba(255,255,255,0.025),0_32px_90px_rgba(0,0,0,0.7)] backdrop-blur-xl">
+        <SnowField />
         <div className="flex items-center justify-between px-5 pb-4 pt-5">
           <div className="flex items-center gap-3">
-            <div className="grid size-10 place-items-center rounded-2xl border border-white/10 bg-gradient-to-br from-cyan-300 via-blue-400 to-violet-500 shadow-[0_10px_24px_rgba(34,211,238,0.2)]">
-              <Box className="size-5 text-[#06111d]" strokeWidth={2.5} />
+            <div className="grid size-10 place-items-center rounded-xl border border-white/15 bg-[#111] shadow-[0_0_24px_rgba(127,255,109,0.1)]">
+              <Box className="size-5 text-[#89ff76]" strokeWidth={2.1} />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <h1 className="text-[0.96rem] font-bold tracking-[-0.03em]">Pulse Cube</h1>
-                <span className="rounded-full bg-cyan-300/12 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-cyan-200">
-                  beta
+                <h1 className="text-[0.86rem] font-bold tracking-[0.08em]">PULSE CUBE</h1>
+                <span className="rounded-sm border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                  preview
                 </span>
               </div>
               <p className="mt-0.5 flex items-center gap-1.5 text-[11px] text-slate-400">
-                <Radio className="size-2.5 text-amber-300" fill="currentColor" />
-                Demo mode · X feed ready
+                <Radio className="size-2.5 text-[#89ff76] drop-shadow-[0_0_5px_rgba(137,255,118,0.9)]" fill="currentColor" />
+                Tracker online · demo feed
               </p>
             </div>
           </div>
           <Button
             aria-label={soundOn ? 'Mute alerts' : 'Enable alert sounds'}
-            className="rounded-xl border border-white/8 bg-white/[0.045] text-slate-300 hover:bg-white/10 hover:text-white"
+            className="rounded-xl border border-white/10 bg-white/[0.03] text-slate-400 hover:bg-white/[0.08] hover:text-white"
             onClick={() => setSoundOn((current) => !current)}
             size="icon-sm"
             variant="ghost"
@@ -200,28 +228,28 @@ export default function Home() {
           </Button>
         </div>
 
-        <div className="mx-5 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        <div className="mx-5 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
-        <div className="px-5 pb-5 pt-4">
+        <div className="relative px-5 pb-5 pt-4">
           <div className="mb-3 flex items-center justify-between">
-            <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.14em] text-cyan-200/80">
-              <span className="size-1.5 rounded-full bg-rose-400 shadow-[0_0_0_4px_rgba(251,113,133,0.12)]" />
+            <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.14em] text-[#a3ff92]/85">
+              <span className="online-dot size-1.5 rounded-full bg-[#89ff76]" />
               Latest signal
             </p>
             <span className="text-[10px] font-medium text-slate-500">Preview alert</span>
           </div>
 
-          <article className="relative overflow-hidden rounded-[23px] border border-cyan-200/15 bg-[linear-gradient(140deg,rgba(19,42,61,0.96),rgba(17,25,49,0.98))] p-4 shadow-[inset_0_1px_rgba(255,255,255,0.06),0_12px_28px_rgba(2,12,27,0.3)]">
-            <div className="absolute -right-9 -top-8 size-28 rounded-full bg-cyan-300/10 blur-2xl" aria-hidden="true" />
+          <article className="relative overflow-hidden rounded-[14px] border border-white/[0.12] bg-[#101010]/95 p-4 shadow-[inset_0_1px_rgba(255,255,255,0.045),0_12px_28px_rgba(0,0,0,0.42)]">
+            <div className="absolute -right-9 -top-8 size-28 rounded-full bg-[#89ff76]/[0.06] blur-2xl" aria-hidden="true" />
             <div className="relative flex items-start gap-3">
-              <div className="grid size-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-amber-300 to-orange-500 text-sm font-black text-[#2a1206] shadow-lg shadow-orange-950/30">
+              <div className="grid size-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-[#262626] text-sm font-black text-slate-300 shadow-lg shadow-black/30">
                 DT
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex min-w-0 items-center gap-1.5">
                     <p className="truncate text-[13px] font-bold">Donald J. Trump</p>
-                    <Check className="size-3.5 shrink-0 text-cyan-300" strokeWidth={3} />
+                    <Check className="size-3.5 shrink-0 text-[#89ff76]" strokeWidth={3} />
                   </div>
                   <span className="shrink-0 text-[10px] text-slate-500">12s ago</span>
                 </div>
@@ -234,22 +262,22 @@ export default function Home() {
 
             <button
               aria-label="Copy detected contract address"
-              className="group relative mt-3 flex w-full items-center gap-2 rounded-2xl border border-white/10 bg-[#08121f]/80 px-3 py-3 text-left transition hover:border-cyan-300/40 hover:bg-[#0a1a2c] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+              className="group relative mt-3 flex w-full items-center gap-2 rounded-xl border border-white/10 bg-black/70 px-3 py-3 text-left transition hover:border-[#89ff76]/40 hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#89ff76]"
               onClick={copyAddress}
               type="button"
             >
-              <Link2 className="size-4 shrink-0 text-cyan-300" />
-              <code className="min-w-0 flex-1 truncate font-mono text-[11px] font-medium text-cyan-100">
+              <Link2 className="size-4 shrink-0 text-[#89ff76]" />
+              <code className="min-w-0 flex-1 truncate font-mono text-[11px] font-medium text-slate-200">
                 {contractAddress}
               </code>
-              <span className="grid size-7 shrink-0 place-items-center rounded-xl bg-white/[0.07] text-slate-300 transition group-hover:bg-cyan-300 group-hover:text-[#06111d]">
+              <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-white/[0.07] text-slate-300 transition group-hover:bg-[#89ff76] group-hover:text-black">
                 {copied ? <Check className="size-3.5" strokeWidth={3} /> : <Copy className="size-3.5" />}
               </span>
             </button>
 
             <div className="mt-3 grid grid-cols-[1fr_auto] gap-2">
               <Button
-                className="h-10 rounded-2xl bg-cyan-300 font-bold text-[#07111e] shadow-[0_8px_18px_rgba(34,211,238,0.16)] hover:bg-cyan-200"
+                className="h-10 rounded-xl bg-[#89ff76] font-bold text-[#07110b] shadow-[0_0_22px_rgba(137,255,118,0.16)] hover:bg-[#b2ffa6]"
                 onClick={copyAddress}
               >
                 {copied ? <Check /> : <Copy />}
@@ -257,7 +285,7 @@ export default function Home() {
               </Button>
               <Button
                 aria-label="Axiom-ready contract address"
-                className="h-10 rounded-2xl border border-white/10 bg-white/[0.055] px-3 text-slate-200 hover:bg-white/10 hover:text-white"
+                className="h-10 rounded-xl border border-white/10 bg-white/[0.04] px-3 text-slate-300 hover:bg-white/[0.1] hover:text-white"
                 onClick={copyAddress}
                 variant="ghost"
               >
@@ -275,7 +303,7 @@ export default function Home() {
             <Button
               aria-expanded={showComposer}
               aria-label="Add X account to watchlist"
-              className="rounded-xl border border-cyan-300/20 bg-cyan-300/10 text-cyan-100 hover:bg-cyan-300/18"
+              className="rounded-xl border border-[#89ff76]/20 bg-[#89ff76]/[0.08] text-[#a3ff92] hover:bg-[#89ff76]/[0.14]"
               onClick={() => setShowComposer((current) => !current)}
               size="icon-sm"
               variant="ghost"
@@ -289,12 +317,12 @@ export default function Home() {
               <Input
                 aria-label="X account handle"
                 autoFocus
-                className="h-9 rounded-xl border-white/10 bg-[#08121f] text-sm text-white placeholder:text-slate-600 focus-visible:border-cyan-300/70"
+                className="h-9 rounded-xl border-white/10 bg-black/70 text-sm text-white placeholder:text-slate-600 focus-visible:border-[#89ff76]/70"
                 onChange={(event) => setAccountInput(event.target.value)}
                 placeholder="Add @handle"
                 value={accountInput}
               />
-              <Button className="h-9 rounded-xl bg-cyan-300 px-3 font-semibold text-[#07111e] hover:bg-cyan-200" type="submit">
+              <Button className="h-9 rounded-xl bg-[#89ff76] px-3 font-semibold text-[#07110b] hover:bg-[#b2ffa6]" type="submit">
                 Add
               </Button>
             </form>
@@ -303,12 +331,12 @@ export default function Home() {
           <ul className="mt-3 space-y-1.5" aria-label="Accounts being watched">
             {accounts.map((account) => (
               <li
-                className="group flex min-h-11 items-center gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.025] px-3 transition hover:bg-white/[0.06]"
+                className="group flex min-h-11 items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.025] px-3 transition hover:bg-white/[0.06]"
                 key={account.handle}
               >
-                <span className={`size-7 shrink-0 rounded-xl bg-gradient-to-br ${account.tone}`} />
+                <span className="size-7 shrink-0 rounded-lg border border-white/10 bg-[linear-gradient(135deg,#3e3e3e,#151515)]" />
                 <span className="min-w-0 flex-1 truncate text-[12px] font-semibold text-slate-200">{account.handle}</span>
-                <span className="flex items-center gap-1.5 text-[10px] font-medium text-emerald-300">
+                <span className="flex items-center gap-1.5 text-[10px] font-medium text-[#a3ff92]">
                   <Eye className="size-3" />
                   on
                 </span>
@@ -324,9 +352,9 @@ export default function Home() {
             ))}
           </ul>
 
-          <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/[0.055] bg-[#091422]/70 px-3 py-2.5">
+          <div className="mt-4 flex items-center justify-between rounded-xl border border-white/[0.08] bg-black/40 px-3 py-2.5">
             <div className="flex items-center gap-2.5">
-              <div className="grid size-7 place-items-center rounded-xl bg-violet-400/10 text-violet-200">
+              <div className="grid size-7 place-items-center rounded-lg bg-white/[0.06] text-[#a3ff92]">
                 <BellRing className="size-3.5" />
               </div>
               <div>
@@ -337,7 +365,7 @@ export default function Home() {
             <Switch
               aria-label="Toggle instant alerts"
               checked={soundOn}
-              className="data-checked:bg-cyan-300 data-unchecked:bg-slate-700"
+              className="data-checked:bg-[#89ff76] data-unchecked:bg-slate-700"
               onCheckedChange={setSoundOn}
               size="sm"
             />
@@ -345,7 +373,7 @@ export default function Home() {
 
           <div aria-live="polite" className="mt-3 flex items-center justify-center gap-1.5 text-center text-[10px] text-slate-500">
             {copied ? (
-              <><Check className="size-3 text-emerald-300" /> Contract address copied — paste it in Axiom.</>
+              <><Check className="size-3 text-[#a3ff92]" /> Contract address copied — paste it in Axiom.</>
             ) : (
               <><CircleAlert className="size-3 text-slate-500" /> Preview data · connect an approved X source for live alerts.</>
             )}
@@ -354,8 +382,8 @@ export default function Home() {
       </section>
 
       <div className="relative mx-auto mt-5 flex max-w-[420px] items-center justify-center gap-1.5 text-[11px] text-slate-500 sm:absolute sm:bottom-7 sm:left-1/2 sm:mt-0 sm:-translate-x-1/2">
-        <Sparkles className="size-3 text-violet-300" />
-        fast feed · clean copy · ready to trade
+        <Sparkles className="size-3 text-[#89ff76]" />
+        monitor online · instant copy
         <ChevronRight className="size-3" />
       </div>
     </main>
